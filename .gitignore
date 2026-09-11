@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local runtime
+*.sqlite3
+
+# Generated model outputs
+outputs/
+*.stl
+*.json
+!outputs/.gitkeep
+
+# Python packaging
+*.egg
+.eggs/
+
+# Coverage
+coverage.xml
+*.coverage
+htmlcov/
+.tox/
+.coverage.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker
+Dockerfile.*
+docker-compose.*
+
+# Render / Railway
+render.yaml
+railway.toml
+runtime.txt

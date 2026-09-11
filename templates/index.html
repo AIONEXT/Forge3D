@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Forge3D — AI Product Factory</title>
+<link rel="stylesheet" href="/static/style.css" />
+<script type="importmap">
+{"imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+<header>
+  <div class="logo">⬢ Forge3D</div>
+  <div class="sub">AI 3D Product Factory — description in, <b>sale-ready product</b> out</div>
+</header>
+
+<main>
+  <section class="panel input">
+    <h2>1 · Describe your product</h2>
+    <textarea id="desc" rows="4">ribbed twist vase, modern home decor, matte finish</textarea>
+    <div class="examples">
+      Try:
+      <button data-ex="minimal phone stand for desk, sturdy">📱 phone stand</button>
+      <button data-ex="succulent planter with drainage look, ribbed">🪴 planter</button>
+      <button data-ex="large desk organizer with pen compartments">🗂️ organizer</button>
+      <button data-ex="wall hook for keys, strong">🪝 hook</button>
+      <button data-ex="mechanical gear fidget toy">⚙️ gear</button>
+    </div>
+    <div class="grid">
+      <label>Printer
+        <select id="printer"></select>
+      </label>
+      <label>Material
+        <select id="material"></select>
+      </label>
+      <label>Quality
+        <select id="quality">
+          <option value="draft">Draft 0.28mm — fastest</option>
+          <option value="standard" selected>Standard 0.20mm</option>
+          <option value="fine">Fine 0.12mm</option>
+          <option value="ultra">Ultra 0.08mm — premium</option>
+        </select>
+      </label>
+      <label>Size <span id="scaleVal">100%</span>
+        <input id="scale" type="range" min="0.5" max="1.8" step="0.05" value="1" />
+      </label>
+      <label>Profit margin <span id="marginVal">55%</span>
+        <input id="margin" type="range" min="0.2" max="0.85" step="0.05" value="0.55" />
+      </label>
+    </div>
+    <div id="compat" class="compat"></div>
+    <button id="run">⚡ Generate commercial-ready product</button>
+    <div id="steps" class="steps"></div>
+  </section>
+
+  <section class="panel viewer">
+    <h2>2 · 3D model <span id="triCount" class="muted"></span></h2>
+    <div id="viewport"><canvas id="c"></canvas></div>
+    <div class="row">
+      <button id="shot">📸 Product photo (PNG)</button>
+      <button id="rot">🔁 Auto-rotate</button>
+      <button id="wire">🔲 Wireframe</button>
+    </div>
+    <div id="validation" class="cards"></div>
+  </section>
+
+  <section class="panel commerce">
+    <h2>3 · Commercial package</h2>
+    <div id="price" class="price"></div>
+    <div id="listing"></div>
+    <div class="row">
+      <button id="dlStl" disabled>⬇ STL model</button>
+      <button id="dlJson" disabled>⬇ Listing JSON</button>
+      <button id="dlPage" disabled>⬇ Sale page (HTML)</button>
+      <button id="boost">✨ AI copy boost (optional)</button>
+    </div>
+    <pre id="boostOut"></pre>
+  </section>
+</main>
+
+<footer>Fully automated pipeline: interpret → generate mesh → validate → slice-cost → list → export · Flask + Three.js · <code>python app.py</code></footer>
+<script type="module" src="/static/app.js"></script>
+</body>
+</html>

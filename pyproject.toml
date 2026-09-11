@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forge3d"
+version = "1.0.0"
+description = "AI 3D Product Factory — description in, sale-ready product out"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "Flask>=3.0",
+    "numpy>=1.26",
+    "gunicorn>=22.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "coverage>=7.0",
+    "ruff>=0.16.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/forge3d/forge3d"
+Repository = "https://github.com/forge3d/forge3d"
+Issues = "https://github.com/forge3d/forge3d/issues"
+
+[tool.setuptools.packages.find]
+include = ["*"]

@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+
+# Environment
+.env
+.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+*.egg
+.eggs/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local runtime
+*.sqlite3
+
+# Generated model outputs
+outputs/
+*.stl
+*.json
+
+# Testing
+.coverage
+htmlcov/
+.tox/
+*.coverage.*
+
+# CI/CD (not needed in image)
+.github/
+
+# Development files
+docker-compose.yml
+requirements-dev.txt
+pyproject.toml
+pytest.ini
+runtime.txt
+render.yaml
+railway.toml
+heroku.yml
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Git
+.git/
+.gitignore

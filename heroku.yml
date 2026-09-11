@@ -1,0 +1,24 @@
+build:
+  docker:
+    web: Dockerfile
+
+run:
+  web: gunicorn --bind 0.0.0.0:$PORT wsgi:app
+
+env:
+  FORGE3D_DEBUG: "false"
+  FORGE3D_PORT: "8000"
+  FORGE3D_SECRET_KEY: ${FORGE3D_SECRET_KEY}
+
+services:
+  web:
+    type: web
+    plan: hobby
+    autoStart: true
+    healthcheck:
+      path: /health
+      timeout: 30
+    ports:
+      - port: 8000
+        protocol: http
+        as: 80
