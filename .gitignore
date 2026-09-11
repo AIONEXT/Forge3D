@@ -39,13 +39,11 @@ Thumbs.db
 *.sqlite3
 
 # Generated model outputs - exclude generated files but keep .gitkeep
-outputs/
-!outputs/
+outputs/*
 !outputs/.gitkeep
 *.stl
 *.json
 *.3mf
-!*.gitkeep
 
 # Coverage
 coverage.xml
