@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  forge3d:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8000"
+    environment:
+      - FORGE3D_HOST=0.0.0.0
+      - FORGE3D_PORT=8000
+      - FORGE3D_DEBUG=false
+      - FORGE3D_SECRET_KEY=${FORGE3D_SECRET_KEY:-change-me}
+      - AI_PROVIDER=offline
+    volumes:
+      - ./outputs:/app/outputs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped

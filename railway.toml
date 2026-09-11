@@ -1,0 +1,11 @@
+[builds]
+  web = { dockerfile = "Dockerfile" }
+
+[deploy]
+  start_command = "gunicorn --bind 0.0.0.0:$PORT wsgi:app"
+  healthcheck_path = "/health"
+  restart_policy = "on-failure"
+  max_restarts = 3
+
+[environments.production]
+  variables = { FORGE3D_DEBUG = "false", FORGE3D_PORT = "8000" }

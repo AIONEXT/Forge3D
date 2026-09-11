@@ -1,0 +1,23 @@
+services:
+  web:
+    startCommand: gunicorn --bind 0.0.0.0:$PORT wsgi:app
+    envVars:
+      - key: FORGE3D_PORT
+        from:
+          deploy:
+            env: PORT
+      - key: FORGE3D_DEBUG
+        value: "false"
+      - key: FORGE3D_SECRET_KEY
+        generateValue: true
+    build:
+      dockerfilePath: Dockerfile
+    plan: starter
+    healthcheck:
+      path: /health
+      interval: 30
+      timeout: 5
+      retries: 3
+      method: GET
+      scheme: HTTPS
+    autoDeploy: true
