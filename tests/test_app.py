@@ -1,14 +1,14 @@
 """Tests for Forge3D application."""
 from __future__ import annotations
+
 import os
-import tempfile
-import json
+
 import pytest
 
+from ai_engine import commercial_pack, detect_category, interpret, sku_for
 from app import create_app, slug
-from ai_engine import interpret, detect_category, commercial_pack, sku_for
-from mesh_engine import build, mesh_volume_cm3, write_binary_stl
-from printers_materials import get_printer, get_material, compatibility
+from mesh_engine import build, mesh_volume_cm3
+from printers_materials import compatibility, get_material, get_printer
 
 
 @pytest.fixture
@@ -20,6 +20,11 @@ def client():
 
 
 class TestHealth:
+    def test_index(self, client):
+        r = client.get("/")
+        assert r.status_code == 200
+        assert b"Forge3D" in r.data
+
     def test_health(self, client):
         r = client.get("/health")
         assert r.status_code == 200
@@ -84,7 +89,8 @@ class TestAPI:
 
     def test_api_run_missing_json(self, client):
         r = client.post("/api/run", data="not json", content_type="application/json")
-        # Should still handle gracefully or return 400
+        assert r.status_code == 400
+        assert r.get_json()["error"]
 
     def test_api_copy_boost_offline(self, client):
         r = client.post("/api/copy-boost", json={"listing": {"title": "test"}})
@@ -138,19 +144,19 @@ class TestPrintersMaterials:
     def test_compatibility_ok(self):
         p = get_printer("bambu_x1c")
         m = get_material("pla")
-        ok, msg = compatibility(p, m)
+        ok, _msg = compatibility(p, m)
         assert ok is True
 
     def test_compatibility_resin_fdm(self):
         p = get_printer("bambu_x1c")
         m = get_material("resin")
-        ok, msg = compatibility(p, m)
+        ok, _msg = compatibility(p, m)
         assert ok is False
 
     def test_compatibility_enclosure(self):
         p = get_printer("prusa_mk4s")
         m = get_material("abs")
-        ok, msg = compatibility(p, m)
+        ok, _msg = compatibility(p, m)
         assert ok is False
 
 
@@ -175,7 +181,7 @@ class TestMeshEngine:
 
     def test_build_phone_stand(self):
         spec = {"category": "phone_stand", "dims_mm": [90, 110, 70], "seed": 1, "style": "smooth"}
-        v, f = build(spec)
+        v, _f = build(spec)
         assert len(v) > 0
 
     def test_volume(self):
@@ -186,8 +192,10 @@ class TestMeshEngine:
         assert abs(vol - 1.0) < 0.01
 
     def test_write_stl(self):
-        from mesh_engine import box_mesh, write_binary_stl
         import tempfile
+
+        from mesh_engine import box_mesh, write_binary_stl
+
         v, f = box_mesh(10, 10, 10)
         with tempfile.NamedTemporaryFile(suffix=".stl", delete=False) as tf:
             path = tf.name

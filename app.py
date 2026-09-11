@@ -12,14 +12,13 @@ import json
 import os
 import re
 import time
-import urllib.request
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
+from werkzeug.exceptions import BadRequest
 
 from ai_engine import commercial_pack, interpret
 from config import AppConfig
 from mesh_engine import build, mesh_volume_cm3, write_binary_stl
-from providers import call_ai_provider
 from printers_materials import (
     MATERIALS,
     PRINTERS,
@@ -28,7 +27,7 @@ from printers_materials import (
     get_material,
     get_printer,
 )
-
+from providers import call_ai_provider
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
@@ -88,7 +87,9 @@ def create_app() -> Flask:
 
     @app.get("/ready")
     def ready():
-        return jsonify({"ok": True, "status": "ready", "outputs_dir": os.path.isdir(OUTPUT_DIR)})
+        outputs_ready = os.path.isdir(OUTPUT_DIR) and os.access(OUTPUT_DIR, os.W_OK)
+        status = "ready" if outputs_ready else "not_ready"
+        return jsonify({"ok": outputs_ready, "status": status, "outputs_dir": outputs_ready}), (200 if outputs_ready else 503)
 
     @app.get("/api/printers")
     def api_printers():
@@ -160,7 +161,7 @@ def create_app() -> Flask:
                 "bed_msg": ("Fits " + printer["name"] + f" ({bw}x{bd}x{bh}mm).") if fits
                 else (f"TOO BIG for {printer['name']} ({bw}x{bd}x{bh}mm). Reduce size or pick Voron/K2 Plus."),
                 "dims_final_mm": dims_final,
-                "triangles": int(len(faces)),
+                "triangles": len(faces),
                 "volume_cm3": round(vol, 1),
             },
             "files": {"stl": f"/download/{fname}", "stl_name": fname},
@@ -193,6 +194,10 @@ def create_app() -> Flask:
     @app.errorhandler(404)
     def handle_404(_error):
         return jsonify({"error": "Not found."}), 404
+
+    @app.errorhandler(BadRequest)
+    def handle_bad_request(_error):
+        return jsonify({"error": "Request body must contain valid JSON."}), 400
 
     @app.errorhandler(500)
     def handle_500(_error):

@@ -68,35 +68,45 @@ gunicorn --bind 0.0.0.0:8000 --workers 2 --timeout 120 wsgi:app
 1. Create a new **Web Service** on [Render](https://render.com)
 2. Connect your GitHub repository
 3. Set the build command and start command:
-   ```
+
+   ```text
    Build Command: pip install -r requirements.txt
    Start Command: gunicorn --bind 0.0.0.0:$PORT wsgi:app
    ```
+
 4. Set environment variables:
-   ```
+
+   ```text
    FORGE3D_PORT = 8000
    FORGE3D_DEBUG = false
    FORGE3D_SECRET_KEY = (auto-generated)
    ```
+
 5. Deploy — `render.yaml` is pre-configured
 
 ### Heroku
 
 1. Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 2. Login and create an app:
+
    ```bash
    heroku login
    heroku create forge3d-app
    ```
+
 3. Set environment variables:
+
    ```bash
    heroku config:set FORGE3D_DEBUG=false
    heroku config:set FORGE3D_SECRET_KEY=$(openssl rand -hex 32)
    ```
+
 4. Deploy:
+
    ```bash
    git push heroku main
    ```
+
 5. Or use `heroku.yml` with the Heroku CI pipeline
 
 ### Railway
@@ -130,16 +140,19 @@ Use Nginx as reverse proxy with SSL.
 ## 🔌 API Reference
 
 ### Get Printers
+
 ```bash
 GET /api/printers
 ```
 
 ### Get Materials
+
 ```bash
 GET /api/materials
 ```
 
 ### Generate Product
+
 ```bash
 POST /api/run
 Content-Type: application/json
@@ -155,6 +168,7 @@ Content-Type: application/json
 ```
 
 ### AI Copy Boost
+
 ```bash
 POST /api/copy-boost
 Content-Type: application/json
@@ -167,11 +181,13 @@ Content-Type: application/json
 ```
 
 ### Download Files
+
 ```bash
 GET /download/<filename>
 ```
 
 ### Health Check
+
 ```bash
 GET /health
 GET /ready
@@ -182,7 +198,7 @@ GET /ready
 Set one of these environment variables before starting:
 
 | Provider | Variables |
-|----------|-----------|
+| --- | --- |
 | OpenAI | `AI_PROVIDER=openai`, `OPENAI_API_KEY=...`, `AI_MODEL=gpt-4o-mini` |
 | Anthropic | `AI_PROVIDER=anthropic`, `ANTHROPIC_API_KEY=...`, `AI_MODEL=claude-3-5-sonnet-latest` |
 | Google Gemini | `AI_PROVIDER=gemini`, `GEMINI_API_KEY=...`, `AI_MODEL=gemini-2.0-flash` |
@@ -199,23 +215,25 @@ Set one of these environment variables before starting:
 Environment variables:
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| --- | --- | --- |
 | `FORGE3D_HOST` | `0.0.0.0` | Host address |
-| `FORGE3D_PORT` | `5000` | Port number |
+| `PORT` | `FORGE3D_PORT` or `5000` | Listening port; cloud platforms set `PORT` automatically |
 | `FORGE3D_DEBUG` | `false` | Debug mode |
-| `FORGE3D_SECRET_KEY` | `forge3d-dev-secret` | Flask secret key |
+| `FORGE3D_SECRET_KEY` | generated at startup | Stable Flask secret key for deployments; set this explicitly when needed |
 | `AI_PROVIDER` | `offline` | AI provider |
 | `API_KEY` | (empty) | Generic API key fallback |
 
 ## 🛠️ Development
 
 ### Run Tests
+
 ```bash
 pip install pytest pytest-cov coverage ruff
 pytest tests/ -v
 ```
 
 ### Lint
+
 ```bash
 pip install ruff
 ruff check .
@@ -223,6 +241,7 @@ ruff format .
 ```
 
 ### Build Docker Image
+
 ```bash
 docker build -t forge3d .
 docker run -p 8000:8000 --env-file .env.example forge3d
@@ -230,7 +249,7 @@ docker run -p 8000:8000 --env-file .env.example forge3d
 
 ## 📂 Project Structure
 
-```
+```text
 forge3d/
 ├── app.py                  # Flask application factory
 ├── wsgi.py                 # WSGI entry point

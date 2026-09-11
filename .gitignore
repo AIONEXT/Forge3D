@@ -25,6 +25,8 @@ build/
 dist/
 *.egg-info/
 .pytest_cache/
+*.egg
+.eggs/
 
 # Logs
 *.log
@@ -36,15 +38,13 @@ Thumbs.db
 # Local runtime
 *.sqlite3
 
-# Generated model outputs
+# Generated model outputs - exclude generated files but keep .gitkeep
 outputs/
+!outputs/
+!outputs/.gitkeep
 *.stl
 *.json
-!outputs/.gitkeep
-
-# Python packaging
-*.egg
-.eggs/
+!*.gitkeep
 
 # Coverage
 coverage.xml
@@ -59,11 +59,8 @@ htmlcov/
 *.swp
 *.swo
 
-# Docker
-Dockerfile.*
-docker-compose.*
-
-# Render / Railway
-render.yaml
-railway.toml
-runtime.txt
+# Testing artifacts
+.coverage
+htmlcov/
+.tox/
+*.coverage.*
