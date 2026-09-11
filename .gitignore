@@ -44,6 +44,7 @@ outputs/
 !outputs/.gitkeep
 *.stl
 *.json
+*.3mf
 !*.gitkeep
 
 # Coverage
