@@ -9,11 +9,12 @@ import re
 
 
 CATEGORIES = [
-    ("vase", ["vase", "flower", "planter", "plant pot", "pot for"]),
-    ("planter", ["succulent", "herb garden", "planter"]),
+    ("planter", ["succulent", "herb garden", "planter", "plant pot", "pot for"]),
+    ("vase", ["vase", "flower", "bouquet"]),
     ("phone_stand", ["phone stand", "phone holder", "iphone", "smartphone", "tablet stand", "tablet holder"]),
     ("desk_organizer", ["organizer", "pen holder", "desk caddy", "storage box", "desk tidy", "makeup holder"]),
     ("box", ["box", "container", "case", "storage", "jar", "lid"]),
+    ("keychain", ["keychain", "keyring", "key chain", "key ring"]),
     ("hook", ["hook", "hanger", "wall mount", "key holder", "coat"]),
     ("gear", ["gear", "cog", "mechanical", "fidget", "spinner"]),
     ("lamp", ["lamp", "shade", "lantern", "light cover", "night light"]),
@@ -114,8 +115,9 @@ def commercial_pack(spec: dict, description: str, printer: dict, material: dict,
     kws = spec["keywords"] or [cat]
 
     nice = cat.replace("_", " ").title()
-    hero = " ".join(w.capitalize() for w in kws[:3]) or nice
-    title = f"{hero} {nice} — 3D Printed {material['name']} {style.title()} Decor"[:140]
+    hero_words = [w.capitalize() for w in kws[:3] if w.lower() not in (nice.lower(), cat.lower())]
+    hero = " ".join(hero_words) or nice
+    title = f"{hero} — 3D Printed {material['name']} {style.title()} {nice}"[:140]
 
     price = round(unit_cost / max(0.05, (1.0 - margin)), 2)
     compare_at = round(price * 1.25, 2)
@@ -130,10 +132,10 @@ def commercial_pack(spec: dict, description: str, printer: dict, material: dict,
     long_desc = (
         f"Meet your new {cat.replace('_',' ')} — {description.strip()[:220]}\n\n"
         f"This listing is for ONE 3D-printed {nice.lower()} in {material['name']}, "
-        f"printed on a {printer['name']} at fine quality. {material['desc']} "
+        f"printed on a {printer['name']} at fine quality. {material['desc']}. "
         f"Measures approx. {dims[0]} x {dims[1]} x {dims[2]} mm.\n\n"
         "CARE: wipe with dry cloth. Keep away from prolonged heat above "
-        f"{material.get('print_temp', 60) - 120 if isinstance(material.get('print_temp'), int) and material.get('print_temp') else 50}C.\n"
+        f"{max(50, int(material.get('print_temp') or 0) - 120)}C.\n"
         "SHIPS: printed to order in 2-4 business days with tracked shipping."
     )
     tags = list(dict.fromkeys(

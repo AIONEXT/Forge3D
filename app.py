@@ -115,11 +115,24 @@ def create_app() -> Flask:
         if not 0.25 <= scale <= 2.5:
             return jsonify({"error": "Scale must be between 0.25 and 2.5."}), 400
 
+        # Pre-check: reject descriptions that would exceed the printer's build volume
+        # at the requested scale (avoids absurd prices on oversized parts).
+        _pre = interpret(description, scale)
+        _bw, _bd, _bh = get_printer(data.get("printer_id", "bambu_x1c"))["build"]
+        _pd = _pre["dims_mm"]
+        if _pd[0] > _bw or _pd[1] > _bd or _pd[2] > _bh:
+            return jsonify({
+                "error": f"Product at scale {scale} is too large for this printer "
+                         f"({_bw}x{_bd}x{_bh}mm). Lower the scale or pick a bigger printer."
+            }), 400
+
         margin = max(0.1, min(0.9, margin))
         printer = get_printer(data.get("printer_id", "bambu_x1c"))
         material = get_material(data.get("material_id", "pla"))
-        quality_id = data.get("quality_id", "standard")
         ok, compat_msg = compatibility(printer, material)
+        if not ok:
+            return jsonify({"error": compat_msg}), 400
+        quality_id = data.get("quality_id", "standard")
 
         t0 = time.time()
         spec = interpret(description, scale)
